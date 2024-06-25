@@ -15,8 +15,17 @@ private void btnConvertToPDF_Click(object sender, EventArgs e)
 
         // Use Spire.Pdf to load and merge the PDF documents
         Spire.Pdf.PdfDocument finalPdf = new Spire.Pdf.PdfDocument();
-        finalPdf.LoadFromFile(pdf1Path);
-        finalPdf.AppendPage(pdf2Path);
+        finalPdf.LoadFromFile(pdf1Path);  // Load the first PDF
+        
+        // Load the second PDF
+        Spire.Pdf.PdfDocument pdfToMerge = new Spire.Pdf.PdfDocument();
+        pdfToMerge.LoadFromFile(pdf2Path);
+
+        // Append each page from the second PDF to the first PDF
+        foreach (Spire.Pdf.PdfPageBase page in pdfToMerge.Pages)
+        {
+            finalPdf.Pages.Add(page);
+        }
 
         // Save the merged PDF
         SaveFileDialog saveFileDialog = new SaveFileDialog();
@@ -28,7 +37,9 @@ private void btnConvertToPDF_Click(object sender, EventArgs e)
             MessageBox.Show("PDFs merged and saved successfully!");
         }
 
-        finalPdf.Close(); // Ensure to close the document to release resources
+        // Close documents to free resources
+        pdfToMerge.Close();
+        finalPdf.Close();
     }
     catch (Exception ex)
     {
