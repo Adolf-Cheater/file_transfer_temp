@@ -21,10 +21,13 @@ private void btnConvertToPDF_Click(object sender, EventArgs e)
         Spire.Pdf.PdfDocument pdfToMerge = new Spire.Pdf.PdfDocument();
         pdfToMerge.LoadFromFile(pdf2Path);
 
-        // Append each page from the second PDF to the first PDF
+        // Get the total page count of the first PDF
+        int pageCount = finalPdf.Pages.Count;
+
+        // Insert each page from the second PDF to the end of the first PDF
         for (int i = 0; i < pdfToMerge.Pages.Count; i++)
         {
-            finalPdf.Pages.Add(pdfToMerge.Pages[i]);
+            finalPdf.InsertPage(pageCount + i, pdfToMerge.Pages[i]);
         }
 
         // Save the merged PDF
