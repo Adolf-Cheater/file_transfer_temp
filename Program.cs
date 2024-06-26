@@ -56,7 +56,7 @@ public partial class MainForm : Form
 
     private void btnMergePDF_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(file1Path))
+        if (string.IsNullOrEmpty(file1Path) || string.IsNullOrEmpty(file2Path))
         {
             MessageBox.Show("Please select both files first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
@@ -64,17 +64,18 @@ public partial class MainForm : Form
 
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         saveFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
-        saveFileDialog.DefaultExt = "pdf";      
+        saveFileDialog.DefaultExt = "pdf";
         saveFileDialog.AddExtension = true;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
             string outputPdfPath = saveFileDialog.FileName;
-
+            
             try
             {
                 // Convert DOCX to PDF
                 string pdf1 = ConvertDocxToPdf(file1Path);
+                string pdf2 = ConvertDocxToPdf(file2Path);
 
                 // Merge PDFs
                 MergePdfs(new List<string> { pdf1, pdf2 }, outputPdfPath);
@@ -83,7 +84,8 @@ public partial class MainForm : Form
                 File.Delete(pdf1);
                 File.Delete(pdf2);
 
-                MessageBox.Show("PDFs merged successfully!",            }
+                MessageBox.Show("PDFs merged successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
             catch (Exception ex)
             {
                 MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -93,7 +95,8 @@ public partial class MainForm : Form
 
     private string ConvertDocxToPdf(string docxPath)
     {
-        string pdfPath = Path.ChangeExtension(docxPath, ".p        
+        string pdfPath = Path.ChangeExtension(docxPath, ".pdf");
+        
         Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
         word.Visible = false;
         word.ScreenUpdating = false;
@@ -101,6 +104,7 @@ public partial class MainForm : Form
         try
         {
             Microsoft.Office.Interop.Word.Document doc = word.Documents.Open(docxPath);
+            doc.ExportAsFixedFormat(pdfPath, WdExportFormat.wdExportFormatPDF);
             doc.Close();
         }
         finally
@@ -111,25 +115,30 @@ public partial class MainForm : Form
         return pdfPath;
     }
 
+
+
+   
     private void MergePdfs(List<string> pdfFiles, string outputFile)
     {
-        using (FileStream stream = new FileStream(outputF        using (Document document = new Document())
+        using (FileStream stream = new FileStream(outputFile, FileMode.Create))
+        using (Document document = new Document())
         using (PdfCopy pdf = new PdfCopy(document, stream))
         {
             document.Open();
 
             foreach (string file in pdfFiles)
             {
-                PdfReader reader = new PdfReader(file);
+                using (PdfReader reader = new PdfReader(file))
                 {
-                    PdfImportedPage page = pdf.GetImportedPage(reader, i);
-                    pdf.AddPage(page);
+                    for (int i = 1; i <= reader.NumberOfPages; i++)
+                    {
+                        PdfImportedPage page = pdf.GetImportedPage(reader, i);
+                        pdf.AddPage(page);
+                    }
                 }
-                reader.Close();
             }
         }
     }
-
 
 
 
