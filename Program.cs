@@ -222,6 +222,11 @@ public partial class MainForm : Form
         this.btnSave = new System.Windows.Forms.Button();
         this.txtFile1Path = new System.Windows.Forms.TextBox();
         this.txtFile2Path = new System.Windows.Forms.TextBox();
+        this.btnMergePDF = new System.Windows.Forms.Button();
+        this.btnMergePDF.Location = new System.Drawing.Point(160, 150);
+        this.btnMergePDF.Size = new System.Drawing.Size(100, 23);
+        this.btnMergePDF.Text = "Merge as PDF";
+        this.btnMergePDF.Click += new EventHandler(this.btnMergePDF_Click);
 
         // Initialize TextBoxes for displaying file paths
         this.txtFile1Path.Location = new System.Drawing.Point(160, 50);
@@ -262,6 +267,8 @@ public partial class MainForm : Form
         this.Controls.Add(this.btnSave);
         this.Controls.Add(this.txtFile1Path);
         this.Controls.Add(this.txtFile2Path);
+        this.Controls.Add(this.btnMergePDF);
+
 
         //main
         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
