@@ -52,6 +52,81 @@ public partial class MainForm: Form
             txtFile2Path.Text = file2Path; // Display selected file path
         }
     }
+
+        private void btnMergePDF_Click(object sender, EventArgs e)
+    {
+        if (string.IsNullOrEmpty(fi        {
+            MessageBox.Show("Please select both files first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            return;
+        }
+
+        SaveFileDialog saveFileDialog = new SaveFileDialog();
+        saveFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
+        saveFileDialog.DefaultExt = "pdf        saveFileDialog.AddExtension = true;
+
+        if (saveFileDialog.ShowDialog() == DialogResult.OK)
+        {
+            string outputPdfPath = saveFileDialog.FileName;
+            
+            try
+            {
+                // Convert DOCX to PDF
+                string pdf1 = ConvertDocxToPdf(file1Path);
+      
+                // Merge PDFs
+                MergePdfs(new List<string> { pdf1, pdf2 }, outputPdfPath);
+
+                // Clean up temporary PDF files
+                File.Delete(pdf1);
+                File.Delete(pdf2);
+
+                MessageBox.Show("PDFs merged successfully!",            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"An error occurred: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+
+    private string ConvertDocxToPdf(string docxPath)
+    {
+        string pdfPath = Path.ChangeExtension(docxPath, ".p        
+        Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
+        word.Visible = false;
+        word.ScreenUpdating = false;
+
+        try
+        {
+            Microsoft.Office.Interop.Word.Document doc = word.Documents.Open(docxPath);
+            doc.Close();
+        }
+        finally
+        {
+            word.Quit();
+        }
+
+        return pdfPath;
+    }
+
+    private void MergePdfs(List<string> pdfFiles, string outputFile)
+    {
+        using (FileStream stream = new FileStream(outputF        using (Document document = new Document())
+        using (PdfCopy pdf = new PdfCopy(document, stream))
+        {
+            document.Open();
+
+            foreach (string file in pdfFiles)
+            {
+                PdfReader reader = new PdfReader(file);
+                               {
+                    PdfImportedPage page = pdf.GetImportedPage(reader, i);
+                    pdf.AddPage(page);
+                }
+                reader.Close();
+            }
+        }
+    }
+
     
 
 
