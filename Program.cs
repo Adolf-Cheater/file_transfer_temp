@@ -12,6 +12,7 @@ using iTextSharp.text;
 using iTextSharp.text.pdf;
 using DocumentFormat.OpenXml.ExtendedProperties;
 using Microsoft;
+using Microsoft.Office.Interop.Word;
 
 
 
@@ -70,7 +71,7 @@ public partial class MainForm : Form
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
             string outputPdfPath = saveFileDialog.FileName;
-            
+
             try
             {
                 // Convert DOCX to PDF
@@ -96,7 +97,7 @@ public partial class MainForm : Form
     private string ConvertDocxToPdf(string docxPath)
     {
         string pdfPath = Path.ChangeExtension(docxPath, ".pdf");
-        
+
         Microsoft.Office.Interop.Word.Application word = new Microsoft.Office.Interop.Word.Application();
         word.Visible = false;
         word.ScreenUpdating = false;
@@ -117,7 +118,7 @@ public partial class MainForm : Form
 
 
 
-   
+
     private void MergePdfs(List<string> pdfFiles, string outputFile)
     {
         using (FileStream stream = new FileStream(outputFile, FileMode.Create))
@@ -132,7 +133,8 @@ public partial class MainForm : Form
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
-                        PdfImportedPage page = pdf.GetImportedPage(re                        pdf.AddPage(page);
+                        PdfImportedPage page = pdf.GetImportedPage(reader, i);
+                        pdf.AddPage (page);
                     }
                 }
             }
@@ -297,7 +299,6 @@ namespace Combining_Docx
             System.Windows.Forms.Application.EnableVisualStyles();
             System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
             System.Windows.Forms.Application.Run(new MainForm());
-        }
         }
     }
 }
