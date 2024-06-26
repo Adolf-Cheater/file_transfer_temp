@@ -121,7 +121,7 @@ public partial class MainForm : Form
     private void MergePdfs(List<string> pdfFiles, string outputFile)
     {
         using (FileStream stream = new FileStream(outputFile, FileMode.Create))
-        using (Document document = new Document())
+        using (iTextSharp.text.Document document = new iTextSharp.text.Document())
         using (PdfCopy pdf = new PdfCopy(document, stream))
         {
             document.Open();
@@ -132,14 +132,12 @@ public partial class MainForm : Form
                 {
                     for (int i = 1; i <= reader.NumberOfPages; i++)
                     {
-                        PdfImportedPage page = pdf.GetImportedPage(reader, i);
-                        pdf.AddPage(page);
+                        PdfImportedPage page = pdf.GetImportedPage(re                        pdf.AddPage(page);
                     }
                 }
             }
         }
     }
-
 
 
     private void btnMerge_Click(object sender, EventArgs e)
@@ -296,9 +294,10 @@ namespace Combining_Docx
         [STAThread]
         static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainForm());
+            System.Windows.Forms.Application.EnableVisualStyles();
+            System.Windows.Forms.Application.SetCompatibleTextRenderingDefault(false);
+            System.Windows.Forms.Application.Run(new MainForm());
+        }
         }
     }
 }
