@@ -8,6 +8,9 @@ using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq.Expressions;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+
 
 
 
@@ -20,6 +23,8 @@ public partial class MainForm: Form
     private Button binSelectFile2;
     private Button btnMerge;
     private Button btnSave;
+    private Button btnMergePDF;
+    private Button btnSavePDF;
     private TextBox txtFile1Path;
     private TextBox txtFile2Path;
 
@@ -47,7 +52,7 @@ public partial class MainForm: Form
             txtFile2Path.Text = file2Path; // Display selected file path
         }
     }
-
+    
 
 
     private void btnMerge_Click(object sender, EventArgs e)
