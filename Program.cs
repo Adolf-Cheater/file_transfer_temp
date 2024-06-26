@@ -10,11 +10,12 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Linq.Expressions;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using DocumentFormat.OpenXml.ExtendedProperties;
+using Microsoft;
 
 
 
-
-public partial class MainForm: Form
+public partial class MainForm : Form
 {
     private string file1Path;
     private string file2Path;
@@ -53,26 +54,28 @@ public partial class MainForm: Form
         }
     }
 
-        private void btnMergePDF_Click(object sender, EventArgs e)
+    private void btnMergePDF_Click(object sender, EventArgs e)
     {
-        if (string.IsNullOrEmpty(fi        {
+        if (string.IsNullOrEmpty(file1Path))
+        {
             MessageBox.Show("Please select both files first.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             return;
         }
 
         SaveFileDialog saveFileDialog = new SaveFileDialog();
         saveFileDialog.Filter = "PDF Files (*.pdf)|*.pdf";
-        saveFileDialog.DefaultExt = "pdf        saveFileDialog.AddExtension = true;
+        saveFileDialog.DefaultExt = "pdf";      
+        saveFileDialog.AddExtension = true;
 
         if (saveFileDialog.ShowDialog() == DialogResult.OK)
         {
             string outputPdfPath = saveFileDialog.FileName;
-            
+
             try
             {
                 // Convert DOCX to PDF
                 string pdf1 = ConvertDocxToPdf(file1Path);
-      
+
                 // Merge PDFs
                 MergePdfs(new List<string> { pdf1, pdf2 }, outputPdfPath);
 
@@ -118,7 +121,7 @@ public partial class MainForm: Form
             foreach (string file in pdfFiles)
             {
                 PdfReader reader = new PdfReader(file);
-                               {
+                {
                     PdfImportedPage page = pdf.GetImportedPage(reader, i);
                     pdf.AddPage(page);
                 }
@@ -127,7 +130,7 @@ public partial class MainForm: Form
         }
     }
 
-    
+
 
 
     private void btnMerge_Click(object sender, EventArgs e)
@@ -168,7 +171,7 @@ public partial class MainForm: Form
             {
                 MessageBox.Show($"An error occurred while accessing the files: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-        }     
+        }
     }
 
     private void CopyStyles(WordprocessingDocument sourceDoc, WordprocessingDocument targetDoc)
@@ -190,7 +193,7 @@ public partial class MainForm: Form
     }
 
 
-     
+
 
     private void btnSave_Click(object sender, EventArgs e)
     {
@@ -204,64 +207,64 @@ public partial class MainForm: Form
 
     private void InitializeComponent()
     {
-            this.binSelectFile1 = new System.Windows.Forms.Button();
-            this.binSelectFile2 = new System.Windows.Forms.Button();
-            this.btnMerge = new System.Windows.Forms.Button();
-            this.btnSave = new System.Windows.Forms.Button();
-            this.txtFile1Path = new System.Windows.Forms.TextBox();
-            this.txtFile2Path = new System.Windows.Forms.TextBox();
+        this.binSelectFile1 = new System.Windows.Forms.Button();
+        this.binSelectFile2 = new System.Windows.Forms.Button();
+        this.btnMerge = new System.Windows.Forms.Button();
+        this.btnSave = new System.Windows.Forms.Button();
+        this.txtFile1Path = new System.Windows.Forms.TextBox();
+        this.txtFile2Path = new System.Windows.Forms.TextBox();
 
         // Initialize TextBoxes for displaying file paths
-        this.txtFile1Path.Location = new System.Drawing.Point(160, 50); 
-        this.txtFile1Path.Size = new System.Drawing.Size(300, 23); 
+        this.txtFile1Path.Location = new System.Drawing.Point(160, 50);
+        this.txtFile1Path.Size = new System.Drawing.Size(300, 23);
 
-        this.txtFile2Path.Location = new System.Drawing.Point(160, 100); 
-        this.txtFile2Path.Size = new System.Drawing.Size(300, 23); 
+        this.txtFile2Path.Location = new System.Drawing.Point(160, 100);
+        this.txtFile2Path.Size = new System.Drawing.Size(300, 23);
 
         //btnSelectFile1
         this.binSelectFile1.Location = new System.Drawing.Point(50, 50); //Positoin
-            this.binSelectFile1.Size = new System.Drawing.Size(100, 23);
-            this.binSelectFile1.Text = "Select File 1";
-            this.binSelectFile1.Click += new EventHandler(this.btnSelectFile1_Click);
+        this.binSelectFile1.Size = new System.Drawing.Size(100, 23);
+        this.binSelectFile1.Text = "Select File 1";
+        this.binSelectFile1.Click += new EventHandler(this.btnSelectFile1_Click);
 
-            //btnSelectFile2
-            this.binSelectFile2.Location = new System.Drawing.Point(50, 100); //Positoin
-            this.binSelectFile2.Size = new System.Drawing.Size(100, 23);
-            this.binSelectFile2.Text = "Select File 2";
-            this.binSelectFile2.Click += new EventHandler(this.btnSelectFile2_Click);
+        //btnSelectFile2
+        this.binSelectFile2.Location = new System.Drawing.Point(50, 100); //Positoin
+        this.binSelectFile2.Size = new System.Drawing.Size(100, 23);
+        this.binSelectFile2.Text = "Select File 2";
+        this.binSelectFile2.Click += new EventHandler(this.btnSelectFile2_Click);
 
-            //btnMerge
-            this.btnMerge.Location = new System.Drawing.Point(50, 150);
-            this.btnMerge.Size = new System.Drawing.Size(100, 23);
-            this.btnMerge.Text = "Merge files";
-            this.btnMerge.Click += new EventHandler(this.btnMerge_Click);
+        //btnMerge
+        this.btnMerge.Location = new System.Drawing.Point(50, 150);
+        this.btnMerge.Size = new System.Drawing.Size(100, 23);
+        this.btnMerge.Text = "Merge files";
+        this.btnMerge.Click += new EventHandler(this.btnMerge_Click);
 
-            //btnSave
-            this.btnSave.Location = new System.Drawing.Point(50, 200);
-            this.btnSave.Size = new System.Drawing.Size(100, 23);
-            this.btnSave.Text = "Save files";    
-            this.btnSave.Click += new EventHandler(this.btnSave_Click);
+        //btnSave
+        this.btnSave.Location = new System.Drawing.Point(50, 200);
+        this.btnSave.Size = new System.Drawing.Size(100, 23);
+        this.btnSave.Text = "Save files";
+        this.btnSave.Click += new EventHandler(this.btnSave_Click);
 
 
-            // Add controls to the form
-            this.Controls.Add(this.binSelectFile1);
-            this.Controls.Add(this.binSelectFile2);
-            this.Controls.Add(this.btnMerge);
-            this.Controls.Add(this.btnSave);
-            this.Controls.Add(this.txtFile1Path);
-            this.Controls.Add(this.txtFile2Path);
+        // Add controls to the form
+        this.Controls.Add(this.binSelectFile1);
+        this.Controls.Add(this.binSelectFile2);
+        this.Controls.Add(this.btnMerge);
+        this.Controls.Add(this.btnSave);
+        this.Controls.Add(this.txtFile1Path);
+        this.Controls.Add(this.txtFile2Path);
 
         //main
         this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(680, 474);
-            this.Controls.Add(this.binSelectFile1);
-            this.Controls.Add(this.binSelectFile2);
-            this.Controls.Add(this.btnMerge);
-            this.Controls.Add(this.btnSave);
-            this.Name = "mainform";
-            this.Text = "DOCX Manager";
-            this.ResumeLayout(false);
+        this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+        this.ClientSize = new System.Drawing.Size(680, 474);
+        this.Controls.Add(this.binSelectFile1);
+        this.Controls.Add(this.binSelectFile2);
+        this.Controls.Add(this.btnMerge);
+        this.Controls.Add(this.btnSave);
+        this.Name = "mainform";
+        this.Text = "DOCX Manager";
+        this.ResumeLayout(false);
 
 
     }
