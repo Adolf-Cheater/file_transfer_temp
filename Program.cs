@@ -117,8 +117,6 @@ public partial class MainForm : Form
     }
 
 
-
-
     private void MergePdfs(List<string> pdfFiles, string outputFile)
     {
         using (FileStream stream = new FileStream(outputFile, FileMode.Create))
@@ -279,7 +277,7 @@ public partial class MainForm : Form
         this.Controls.Add(this.btnMerge);
         this.Controls.Add(this.btnSave);
         this.Name = "mainform";
-        this.Text = "DOCX Manager";
+        this.Text = "File Manager";
         this.ResumeLayout(false);
 
 
